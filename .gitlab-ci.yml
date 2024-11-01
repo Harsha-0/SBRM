@@ -1,0 +1,25 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+   - echo "Application  Started..."
+   - npm install   
+   - npm run build
+   - echo "Application Build successfully Completed."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  #environment: production
+  script:
+    - echo "Deploying to the production environment"
+    - npm install  
+    - npm run build
+    - echo "Deploying application..."
+    - docker cp /home/gitlab-runner/builds/wvVHA1cvd/0/mulecraft/client/corvano_resource_managment/dist/.  resourcemanagment:/usr/share/nginx/html/
+    - echo "Application successfully deployed In Production"
+  only:
+    - main
